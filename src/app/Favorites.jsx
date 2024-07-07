@@ -6,23 +6,47 @@ import Header from '../components/Search'
 import Button from "@mui/material/Button";
 import { IoIosHeart, IoMdHeartEmpty } from "react-icons/io";
 import '../css/Favorites.css'
+import {api} from "../vars/JwtToken"
+import axios from "axios"
 
 export default function Favorites({ product, total, money, basket, setBasket, value }) {
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [products, setProducts] = useState([]);
   const [productDetails, setProductDetails] = useState([]);
-
+  const fetchThumbnail = async (productName) => {
+    try {
+        const res = await axios.get(`https://dummyjson.com/products/search?q=${productName}`);
+        if(res.data.products.length>0){
+            const thumbnail=res.data.products[0].thumbnail
+            return thumbnail;
+        }
+    } catch (error) {
+        console.error('Error fetching thumbnail:', error.message);
+    }
+    
+};
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://dummyjson.com/products");
-        const result = await response.json();
-        if (result && Array.isArray(result.products)) {
-          setProducts(result.products);
+        const token = localStorage.getItem('jwtAccessToken');
+        const response = await api.get("/get_all_products/", {
+            headers: { "Content-Type": "application/json",
+                Authorization: 'JWT ' + token,
+             },
+          })
+        const result = await response.data
+        if (result && Array.isArray(result)) {
+          result.forEach(async (product) => {
+            product.thumbnail=await fetchThumbnail(product.name)
+           });
+            setProducts(result);
+        } else {
+            console.error('Invalid data structure:', result);
+            setProducts([]);
         }
-      } catch (error) {
+    } catch (error) {
         console.error('Error fetching data:', error);
-      }
+    }
     };
 
     fetchData();
@@ -39,7 +63,7 @@ export default function Favorites({ product, total, money, basket, setBasket, va
           productsDetails.push({
             thumbnail: product.thumbnail,
             price: product.price,
-            title: product.title,
+            name: product.name,
             description: product.description,
             id: product.id,
           });
@@ -86,7 +110,7 @@ export default function Favorites({ product, total, money, basket, setBasket, va
     setProductItem(!ProductItem)
   
   }
-
+console.log(products)
   return (
     <>
       <Header/>
@@ -106,7 +130,7 @@ export default function Favorites({ product, total, money, basket, setBasket, va
                 <img className="img" id="Favİtemİmage" src={product.thumbnail} alt="" />
                 <div className="img-info">
                   <div className="info-inner">
-                    <span className="p-name">{product.title}</span>
+                    <span className="p-name">{product.name}</span>
                     {/* <span className="p-company">MeMo</span> */}
                   </div>
                   <div className="a-size">{product.description}</div>

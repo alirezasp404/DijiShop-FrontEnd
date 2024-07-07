@@ -58,7 +58,6 @@ function FavoriteAddHeart({ productId }) {
         },
       });
     } else {
-      // Favoriden kaldır
       const updatedFavorites = favorites.filter((favId) => favId !== productId);
       localStorage.setItem('Favorites', JSON.stringify(updatedFavorites));
 

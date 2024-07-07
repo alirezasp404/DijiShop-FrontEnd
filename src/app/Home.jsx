@@ -9,7 +9,6 @@ import {api} from "../vars/JwtToken"
 import axios from 'axios';
 
 export default function Home() {
-    const [money] = useState(100000);
     const [basket, setBasket] = useState([]);
     const [total, setTotal] = useState(0);
     const [products, setProducts] = useState([]);
@@ -24,7 +23,7 @@ export default function Home() {
     };
 
     const handleSearch = (searchValue) => {
-        if(searchValue==""){
+        if(searchValue===""){
             setFilteredProducts(products)
             const uniqueCategories = Array.from(new Set(products.map(product => product.store.name)));
             setCategories(uniqueCategories);
@@ -53,9 +52,7 @@ export default function Home() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                localStorage.setItem("jwtAccessToken", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIwNDI4ODQ3LCJpYXQiOjE3MjAzNDI0NDcsImp0aSI6IjBkZTRkNDE1YjdmZDQzMGJiY2EwY2E0ZTA3OTFmOWQyIiwidXNlcl9pZCI6Mn0.WWZliZiGb1IsapDgfe17OBU2Of2F7BhNV_tNTZuRi0o");
                 const token = localStorage.getItem('jwtAccessToken');
-                
                 const response = await api.get("/get_all_products/", {
                     headers: { "Content-Type": "application/json",
                         Authorization: 'JWT ' + token,
@@ -85,7 +82,7 @@ export default function Home() {
         fetchData();
 
     }, []); 
-    
+
     return (
         <div className='Main'>
             <Header onSearch={handleSearch} />
@@ -104,7 +101,7 @@ export default function Home() {
                             {filteredProducts
                                 .filter(product => product.store.name === category)
                                 .map(product => (
-                                    <Product key={product.id} total={total} money={money} basket={basket} setBasket={setBasket} product={product}/>
+                                    <Product key={product.id} total={total}  basket={basket} setBasket={setBasket} product={product}/>
                                 ))}
                         </div>
                     </div>

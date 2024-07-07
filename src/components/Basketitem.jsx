@@ -3,7 +3,7 @@ import React from 'react'
 function BasketItem({ item, product }) {
   return (
     <div>
-        {product.title} x {item.amount}
+        {product.name} x {item.amount}
     </div>
   )
 }
