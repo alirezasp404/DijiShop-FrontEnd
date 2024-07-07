@@ -170,7 +170,48 @@ export default function Cart() {
     },
     "justify-content-between",
   );
-console.log(products)
+
+
+
+  const handleCheckout=(event)=>{
+
+    const formattedStuffs = productDetails.map(productDetail => ({
+      id: productDetail.id,
+      num_of_stuff: productDetail.quantity,
+    }));
+    
+    const finalObject = { stuffs: formattedStuffs };
+
+
+    localStorage.setItem("jwtAccessToken", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIwNDY2NDUwLCJpYXQiOjE3MjAzODAwNTAsImp0aSI6IjVmMWRkNDdmYzExYTRmNjk4NTBiZTIyMmY1NzlkM2ExIiwidXNlcl9pZCI6NX0.BpapTMiRlJyZFn7QXd3Rugq7nKoFhvEd3Gfwx7rUlBE");
+    const token = localStorage.getItem('jwtAccessToken');
+  
+    api.post('/add_stuff_to_cart/', finalObject, {
+      headers: { "Content-Type": "application/json",
+          Authorization: 'JWT ' + token,
+       },
+    })
+  .then(response => {
+    api.post('/buy_cart/',{}, {
+      headers: { 
+          Authorization: 'JWT ' + token,
+       },
+    }).then(response=>{
+      console.log("success full buy",response.data)
+    })
+    .catch(error=>{
+      console.error(error)
+    })
+  })
+  .catch(error => {
+    console.error('Error:', error.message);
+  });
+  }
+
+
+
+
+
   return (
     <>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
@@ -222,7 +263,7 @@ console.log(products)
               <div className="col">TOTAL PRICE</div>
               <div className="col text-right">$ {totalPrice}</div>
             </div>
-            <button className="btn">CHECKOUT</button>
+            <button onClick={handleCheckout} className="btn">CHECKOUT</button>
           </div>
         </div>
       </div>
