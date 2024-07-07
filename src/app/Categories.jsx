@@ -18,7 +18,8 @@ import TextField from '@mui/material/TextField'
 import toast, { Toaster } from 'react-hot-toast';
 import styled from 'styled-components'
 import FavoriteHeart from '../components/FavoriteAddHeart'
-
+import {api} from "../vars/JwtToken"
+import axios from "axios"
 
 const IconButton = styled(Button)`
   && {
@@ -48,16 +49,42 @@ function Filter() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
+    const fetchThumbnail = async (productName) => {
+      try {
+          const res = await axios.get(`https://dummyjson.com/products/search?q=${productName}`);
+          if(res.data.products.length>0){
+              const thumbnail=res.data.products[0].thumbnail
+              return thumbnail;
+          }
+      } catch (error) {
+          console.error('Error fetching thumbnail:', error.message);
+      }
+      
+  }
     const fetchData = async () => {
       try {
-        const response = await fetch("https://dummyjson.com/products");
-        const result = await response.json();
-        if (result && Array.isArray(result.products)) {
-          setProducts(result.products);
+        const token = localStorage.getItem('jwtAccessToken');
+        const response = await api.get("/get_all_products/", {
+            headers: { "Content-Type": "application/json",
+                Authorization: 'JWT ' + token,
+             },
+          })
+        const result = await response.data
+        if (result && Array.isArray(result)) {
+          result.forEach(async (product) => {
+            product.thumbnail=await fetchThumbnail(product.name)
+           });
+           setFilteredProducts(result);
+           const uniqueCategories = Array.from(new Set(result.map(product => product.store.name)));
+           setCategories(uniqueCategories);
+           setProducts(result);
+        } else {
+            console.error('Invalid data structure:', result);
+            setProducts([]);
         }
-      } catch (error) {
+    } catch (error) {
         console.error('Error fetching data:', error);
-      }
+    }
     };
 
     fetchData();
@@ -74,7 +101,7 @@ function Filter() {
           productsDetails.push({
             thumbnail: product.thumbnail,
             price: product.price,
-            title: product.title,
+            name: product.name,
             description: product.description,
             id: product.id,
           });
@@ -127,42 +154,20 @@ function Filter() {
     });
   
   }
-  useEffect(() => {
-    const fetchData = async () => {
-        try {
-            const response = await fetch('https://dummyjson.com/products');
-            const result = await response.json();
 
-            if (result && Array.isArray(result.products)) {
-                setProducts(result.products);
-                setFilteredProducts(result.products);
-                
-                const uniqueCategories = Array.from(new Set(result.products.map(product => product.category)));
-                setCategories(uniqueCategories);
-            } else {
-                console.error('Invalid data structure:', result);
-                setProducts([]);
-                setFilteredProducts([]);
-                setCategories([]);
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    fetchData();
-}, []); 
-
-const handleSearch = (searchValue) => {
-  const filtered = products.filter(product =>
-      product.title.toLowerCase().includes(searchValue.toLowerCase())
-  );
-
-  setFilteredProducts(filtered);
-
-
-  const uniqueCategories = Array.from(new Set(filtered.map(product => product.category)));
-  setCategories(uniqueCategories);
+  const handleSearch = (searchValue) => {
+    if(searchValue===""){
+        setFilteredProducts(products)
+        const uniqueCategories = Array.from(new Set(products.map(product => product.store.name)));
+        setCategories(uniqueCategories);
+    }else{
+        const filtered = products.filter(product =>
+            product.name.toLowerCase().includes(searchValue.toLowerCase())
+        );
+        setFilteredProducts(filtered)
+        const uniqueCategories = Array.from(new Set(filtered.map(product => product.store.name)));
+        setCategories(uniqueCategories);
+    }
 };
 const handleChange = (event) => {
   const selectedCategory = event.target.value;
@@ -170,12 +175,13 @@ const handleChange = (event) => {
   if (selectedCategory === "All") {
     filteredProducts = products;
   } else {
-    filteredProducts = products.filter(product => product.category === selectedCategory);
+    filteredProducts = products.filter(product => product.store.name === selectedCategory);
   }
   setFilteredProducts(filteredProducts);
 
-  const uniqueCategories = Array.from(new Set(filteredProducts.map(product => product.category)));
+  const uniqueCategories = Array.from(new Set(filteredProducts.map(product => product.store.name)));
   setCategories(uniqueCategories);
+
 };
 
 
@@ -203,6 +209,9 @@ const handlePriceFilter = () => {
   setFilteredProducts(filteredByPrice);
 };
 
+
+
+
   return (
     <>
     <Toaster/>
@@ -218,15 +227,11 @@ const handlePriceFilter = () => {
            name="radio-buttons-group"
            onChange={handleChange}
          >
-           <FormLabel id="demo-radio-buttons-group-label" className='CategoriesText'>Categories</FormLabel>
-           {/* <Typography className="line">---------------------------------------------------</Typography> */}
+           <FormLabel id="demo-radio-buttons-group-label" className='CategoriesText'>Stores</FormLabel>
            <FormControlLabel value="All" control={<Radio />} label="All" />
-           <FormControlLabel value="smartphones" control={<Radio />} label="Smart Phones" />
-           <FormControlLabel value="laptops" control={<Radio />} label="Laptops" />
-           <FormControlLabel value="fragrances" control={<Radio />} label="fragrances" />
-           <FormControlLabel value="skincare" control={<Radio />} label="skincare" />
-           <FormControlLabel value="groceries" control={<Radio />} label="groceries" />
-           <FormControlLabel value="home-decoration" control={<Radio />} label="home decoration" />
+           <CategoryRadioButtons categories={categories} />
+
+
          </RadioGroup>
 
          
@@ -256,11 +261,11 @@ const handlePriceFilter = () => {
     <div className='Product-Container-Catogory'>
 
     {categories.map(category => (
-    <div key={category} className="filter-category-container">
+      <div key={category} className="filter-category-container">
       <h2 className="Filter-category-title">{category}</h2>
       <div className="Filter-product-container">
       {filteredProducts
-        .filter(product => product.category === category)
+      .filter(product => product.store.name === category)
         .map((product, index) => (
           <div className="ProductContainer page-wrapper" key={index}>
             <div className="ProductContainer page-wrapper" key={index}>
@@ -271,8 +276,7 @@ const handlePriceFilter = () => {
                       <img className="img" id="Favİtemİmage" src={product.thumbnail} alt="" />
                       <div className="img-info">
                         <div className="info-inner">
-                          <span className="p-name">{product.title}</span>
-                          {/* <span className="p-company">MeMo</span> */}
+                          <span className="p-name">{product.name}</span>
                         </div>
                         <div className="a-size">{product.description}</div>
                       </div>
@@ -313,4 +317,17 @@ export default Filter;
 
 
   
-         
+function CategoryRadioButtons({ categories }) {
+  return (
+    <div>
+      {categories.map((category) => (
+        <FormControlLabel
+          key={category}
+          value={category}
+          control={<Radio />}
+          label={category}
+        />
+      ))}
+    </div>
+  );
+}
