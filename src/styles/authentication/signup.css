@@ -1,0 +1,207 @@
+.signup-container {
+  height: 100vh;
+  width: 100vw;
+  padding-top: 10vh;
+}
+.signup-background-img {
+  height: 100vh;
+  width: 100vw;
+}
+.signup-box {
+  border: 3px solid #a7b7da;
+  width: 30%;
+  height: 610px;
+  margin: auto;
+  /* margin-top: 70px; */
+  background-color: rgb(160, 174, 215, 0.3);
+  backdrop-filter: blur(28px);
+  border-radius: 40px;
+}
+
+.signup-input::placeholder {
+  color: #aebeee !important;
+  font-size: 16px;
+}
+
+.signup-input {
+  background-color: transparent !important;
+  text-align: right !important;
+  height: 40px !important;
+  color: black !important;
+  border-radius: 0 !important;
+  font-size: 19px !important;
+  padding-bottom: 0px !important;
+  border: none !important;
+}
+
+.signup-email-div,
+.signup-password-div {
+  display: flex;
+  align-items: baseline;
+}
+
+.signup-firstname-div,
+.signup-lastname-div,
+.signup-email-div,
+.signup-password-div {
+  margin-bottom: 15px;
+}
+
+.signup-button {
+  margin-bottom: 0px;
+  text-align: center;
+}
+
+.signup-button button {
+  height: 41px;
+  width: 35%;
+  margin-right: 4%;
+  color: black;
+  background-color: #2f98f5;
+  border: none;
+  border-radius: 100px;
+  font-size: 17px;
+}
+
+.signin-google-a {
+  margin-bottom: 0px;
+}
+
+.signin-linkedin-img,
+.signin-google-img {
+  width: 35px;
+  margin-left: 10px;
+}
+
+.signup-div a {
+  border: none;
+  color: #c8ccde;
+  font-size: 16px;
+  border-radius: 50px;
+  margin-top: -15px;
+  width: 50%;
+}
+
+.jobit-picture {
+  position: absolute;
+  top: -70px;
+  left: -270px;
+  width: 500px;
+}
+
+.signup-div {
+  position: relative;
+  z-index: 10;
+}
+
+.forget-password-button {
+  background: transparent !important;
+  border-color: #cbd5f4 !important;
+  border: 2px solid #cbd5f4 !important;
+}
+
+.signup-button button:hover {
+  background-color: #cbd5f4;
+  color: black;
+}
+
+.register-button:hover {
+  background-color: #003465 !important;
+  color: white !important;
+}
+
+.forget-password-button:hover {
+  background: #cbd5f4 !important;
+  color: black !important;
+}
+
+.input-firstname-signup img {
+  position: absolute !important;
+  top: 0px !important;
+  right: 0px !important;
+}
+
+.input-lastname-signup img {
+  position: absolute !important;
+  top: 65px !important;
+  right: 0px !important;
+}
+
+.input-email-signup img {
+  position: absolute !important;
+  top: 130px !important;
+  right: 0px !important;
+}
+
+.input-password-signup img {
+  position: absolute !important;
+  top: 195px !important;
+  right: 0px !important;
+}
+
+.google-linkedin-button {
+  display: flex;
+  margin-bottom: 30px;
+  justify-content: space-evenly;
+}
+
+.google-linkedin-button a {
+  background-color: #bfbfbf !important;
+  color: white;
+  border: none !important;
+  border-radius: 100px;
+  font-size: 17px;
+  height: 46px;
+  text-align: center;
+  display: block;
+  padding: 5px;
+  font-size: 16px;
+  text-decoration: none;
+  transition: 200ms;
+}
+
+.google-linkedin-button a:first-child {
+  margin-right: 6%;
+}
+
+.google-linkedin-button a:last-child {
+  margin-left: 6%;
+  transition: 200ms;
+}
+
+.signup-div div input {
+  box-shadow: 0 0 0 !important;
+}
+
+.signup-error {
+  font-size: 13px;
+  color: #ff6d6d;
+  position: absolute;
+  margin-top: -13px;
+  right: 0;
+}
+
+.right-line-signup-by {
+  width: 40%;
+  height: 3px;
+  background: transparent;
+  background-image: linear-gradient(to right, #fff, transparent);
+  border: none;
+}
+
+.left-line-signup-by {
+  width: 40%;
+  height: 3px;
+  background: transparent;
+  background-image: linear-gradient(to right, transparent, #fff);
+  border: none;
+}
+
+.border-bottom-input-signup {
+  width: 100%;
+  height: 3px;
+  background: transparent;
+  margin-top: -10px;
+  background-image: linear-gradient(to right, transparent, #fff);
+  border: none;
+}

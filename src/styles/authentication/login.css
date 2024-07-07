@@ -1,0 +1,235 @@
+.login-container {
+  height: 100vh;
+  width: 100vw;
+  padding-top: 15vh;
+}
+.login-background-img {
+  height: 100vh;
+  width: 100vw;
+}
+.login-box {
+  border: 3px solid #a7b7da;
+  width: 30%;
+  height: 550px;
+  margin: auto;
+  /* margin-top: 90px; */
+  background-color: rgb(160, 174, 215, 0.3);
+  backdrop-filter: blur(28px);
+  border-radius: 40px;
+}
+
+.login-input::placeholder {
+  color: #aebeee !important;
+  font-size: 16px;
+}
+
+.login-input {
+  background-color: transparent !important;
+  text-align: right !important;
+  height: 50px !important;
+  color: black !important;
+  border-radius: 0 !important;
+  font-size: 19px !important;
+  padding-bottom: 0px !important;
+  border: none !important;
+}
+
+.login-email-div,
+.login-password-div {
+  display: flex;
+  align-items: baseline;
+}
+
+.login-email-div {
+  margin-bottom: 40px;
+}
+
+.login-password-div {
+  margin-bottom: 40px;
+}
+
+.login-email-div img {
+  margin-left: 15px;
+}
+
+.login-password-div img {
+  margin-left: 15px;
+}
+
+.login-button {
+  display: flex;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+.login-button a {
+  height: 41px;
+  margin-right: 7%;
+  margin-left: 4%;
+  width: 52%;
+  background-color: #869ee5 !important;
+  color: black;
+  border: none !important;
+  border-radius: 100px;
+  font-size: 17px;
+  padding: 8px;
+}
+
+.login-button button {
+  height: 41px;
+  width: 35%;
+  margin-right: 4%;
+  color: black;
+  background-color: #2f98f5;
+  border: none;
+  border-radius: 100px;
+  font-size: 17px;
+}
+
+.signin-google-a {
+  margin-bottom: 15px;
+}
+
+.signin-linkedin-img,
+.signin-google-img {
+  width: 28px;
+  margin-left: 10px;
+}
+
+.register-div {
+  display: flex;
+}
+
+.register-div p {
+  background-color: transparent;
+  border-color: #cbd5f4;
+  font-size: 14px;
+  direction: rtl;
+  color: #b6bbd3;
+}
+
+.register-div a {
+  border: none;
+  color: #c8ccde;
+  font-size: 16px;
+  width: 120px;
+  border-radius: 50px;
+}
+
+.jobit-picture {
+  position: absolute;
+  top: -70px;
+  left: -270px;
+  width: 500px;
+}
+
+.login-div {
+  position: relative;
+  z-index: 10;
+}
+
+.forget-password-button {
+  background: transparent !important;
+  border-color: #cbd5f4 !important;
+  border: 2px solid #cbd5f4 !important;
+}
+
+.login-button button:hover {
+  background-color: #cbd5f4;
+  color: black;
+}
+
+.register-button:hover {
+  background-color: #003465 !important;
+  color: white !important;
+}
+
+.forget-password-button:hover {
+  background: #cbd5f4 !important;
+  color: black !important;
+}
+
+.google-linkedin-button {
+  display: flex;
+  margin-bottom: 30px;
+  justify-content: space-evenly;
+}
+
+.google-linkedin-button a {
+  background-color: #bfbfbf !important;
+  color: white;
+  border: none !important;
+  border-radius: 100px;
+  font-size: 17px;
+  height: 46px;
+  text-align: center;
+  display: block;
+  padding: 5px;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.google-linkedin-button a:first-child {
+  margin-left: 6%;
+  padding-right: 10px;
+  padding-left: 20px;
+  transition: 200ms;
+}
+
+.google-linkedin-button a:last-child {
+  margin-left: 6%;
+  padding-right: 5px;
+  padding-left: 20px;
+  transition: 200ms;
+}
+
+.google-linkedin-button a:last-child:hover {
+  background-image: linear-gradient(
+    to left,
+    #4285f4,
+    #ea4335,
+    #fbbc05,
+    #34a853
+  );
+}
+
+.google-linkedin-button a:first-child:hover {
+  background-image: linear-gradient(to right, #2f98f5, #fff);
+}
+
+.login-div div input {
+  box-shadow: 0 0 0 !important;
+}
+
+.login-error {
+  font-size: 13px;
+  color: #ff6d6d;
+  position: absolute;
+  margin-top: -13px;
+  right: 0;
+}
+
+.right-line-login-by {
+  width: 40%;
+  height: 3px;
+  background: transparent;
+  background-image: linear-gradient(to right, #fff, transparent);
+  border: none;
+}
+
+.left-line-login-by {
+  width: 40%;
+  height: 3px;
+  background: transparent;
+  background-image: linear-gradient(to right, transparent, #fff);
+  border: none;
+}
+
+.border-bottom-input-login {
+  width: 100%;
+  height: 3px;
+  background: transparent;
+  margin-top: -40px;
+  background-image: linear-gradient(to right, transparent, #fff);
+  border: none;
+}

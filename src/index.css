@@ -1,0 +1,10 @@
+@font-face {
+  font-family: vazir;
+  src: url(../public/fonts/Vazir.ttf);
+
+}
+
+
+body {
+  font-family: vazir !important;
+}
