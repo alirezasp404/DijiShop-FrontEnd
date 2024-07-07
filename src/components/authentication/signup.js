@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { api } from "../../vars/JwtToken.js";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-
+// import "bootstrap/dist/css/bootstrap.min.css";
 function Signup() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");

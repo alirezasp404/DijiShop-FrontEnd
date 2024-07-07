@@ -7,7 +7,7 @@ import Categories from '../app/Categories'
 import SearchBar from '../components/Search';
 import Login from "../components/authentication/login.js";
 import Signup from "../components/authentication/signup.js";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
