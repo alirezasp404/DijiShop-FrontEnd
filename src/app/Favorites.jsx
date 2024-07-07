@@ -13,19 +13,21 @@ export default function Favorites({ product, total, money, basket, setBasket, va
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [products, setProducts] = useState([]);
   const [productDetails, setProductDetails] = useState([]);
-  const fetchThumbnail = async (productName) => {
-    try {
-        const res = await axios.get(`https://dummyjson.com/products/search?q=${productName}`);
-        if(res.data.products.length>0){
-            const thumbnail=res.data.products[0].thumbnail
-            return thumbnail;
-        }
-    } catch (error) {
-        console.error('Error fetching thumbnail:', error.message);
-    }
-    
-};
+  
+
   useEffect(() => {
+    const fetchThumbnail = async (productName) => {
+      try {
+          const res = await axios.get(`https://dummyjson.com/products/search?q=${productName}`);
+          if(res.data.products.length>0){
+              const thumbnail=res.data.products[0].thumbnail
+              return thumbnail;
+          }
+      } catch (error) {
+          console.error('Error fetching thumbnail:', error.message);
+      }
+      
+  }
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('jwtAccessToken');
