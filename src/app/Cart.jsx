@@ -7,6 +7,8 @@ import classNames from 'classnames';
 import Header from '../components/Search'
 import '../css/Cart.css';
 import '../css/newCart.css'
+import {api} from "../vars/JwtToken"
+import axios from "axios"
 export default function Cart() {
   // const[total, SetTotal] = useState('')
   // useEffect(() => {
@@ -27,19 +29,39 @@ export default function Cart() {
   }, []);
 
   useEffect(() => {
+    const fetchThumbnail = async (productName) => {
+      try {
+          const res = await axios.get(`https://dummyjson.com/products/search?q=${productName}`);
+          if(res.data.products.length>0){
+              const thumbnail=res.data.products[0].thumbnail
+              return thumbnail;
+          }
+      } catch (error) {
+          console.error('Error fetching thumbnail:', error.message);
+      }
+      
+  }
     const fetchData = async () => {
       try {
-        const response = await fetch("https://dummyjson.com/products");
-        const result = await response.json();
-        if (result && Array.isArray(result.products)) {
-          setProducts(result.products);
+        const token = localStorage.getItem('jwtAccessToken');
+        const response = await api.get("/get_all_products/", {
+            headers: { "Content-Type": "application/json",
+                Authorization: 'JWT ' + token,
+             },
+          })
+        const result = await response.data
+        if (result && Array.isArray(result)) {
+          result.forEach(async (product) => {
+            product.thumbnail=await fetchThumbnail(product.name)
+           });
+           setProducts(result);
+        } else {
+            console.error('Invalid data structure:', result);
+            setProducts([]);
         }
-        else{
-          console.log("Your Cart list is empty.")
-        }
-      } catch (error) {
+    } catch (error) {
         console.error('Error fetching data:', error);
-      }
+    }
     };
 
     fetchData();
@@ -59,8 +81,8 @@ export default function Cart() {
           const productDetail = {
             thumbnail: product.thumbnail,
             price: product.price,
-            title: product.title,
-            catogory: product.catogory,
+            name: product.name,
+            store: product.store.name,
             description: product.description,
             id: product.id,
             quantity: productQuantity, 
@@ -148,7 +170,7 @@ export default function Cart() {
     },
     "justify-content-between",
   );
-  
+console.log(products)
   return (
     <>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
@@ -168,10 +190,10 @@ export default function Cart() {
             {productDetails.map((product, index) => (
             <div className="row border-top border-bottom">
               <div className="row main align-items-center">
-                <div className="col-2"><img className="img-fluid" src={product.thumbnail} alt={`${index}`}/></div>
+                <div className="col-2"><img className="img-fluid" src={product.thumbnail} alt=""/></div>
                 <div className="col">
-                  <div className="row text-muted">{product.catogory}</div>
-                  <div className="row">{product.title}</div>
+                  <div className="row text-muted">{product.store}</div>
+                  <div className="row">{product.name}</div>
                 </div>
                 <div className="col">
                   <Link className='cartLinks' onClick={() => RemoveQuantity(product.id)}>-</Link><Link className="border" id='cartLinks'>{product.quantity}</Link><Link className='cartLinks' onClick={() => AddQuantity(product.id)}>+</Link>
