@@ -6,6 +6,7 @@ import '../css/Home.css'
 import Loginİmage from '../components/Loginİmage'
 import Slider from '../components/Slider';
 import {api} from "../vars/JwtToken"
+import axios from 'axios';
 
 export default function Home() {
     const [money] = useState(100000);
@@ -14,6 +15,8 @@ export default function Home() {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [thumbnails, setThumbnails] = useState([]);
+
 
     const resetBasket = () => {
         setBasket([]);
@@ -21,17 +24,32 @@ export default function Home() {
     };
 
     const handleSearch = (searchValue) => {
-        const filtered = products.filter(product =>
-            product.title.toLowerCase().includes(searchValue.toLowerCase())
-        );
-
-        setFilteredProducts(filtered);
-
-
-        const uniqueCategories = Array.from(new Set(filtered.map(product => product.category)));
-        setCategories(uniqueCategories);
+        if(searchValue==""){
+            setFilteredProducts(products)
+            const uniqueCategories = Array.from(new Set(products.map(product => product.store.name)));
+            setCategories(uniqueCategories);
+        }else{
+            const filtered = products.filter(product =>
+                product.name.toLowerCase().includes(searchValue.toLowerCase())
+            );
+            setFilteredProducts(filtered)
+            const uniqueCategories = Array.from(new Set(filtered.map(product => product.store.name)));
+            setCategories(uniqueCategories);
+        }
     };
-
+    const fetchThumbnail = async (productName) => {
+        try {
+            const res = await axios.get(`https://dummyjson.com/products/search?q=${productName}`);
+            if(res.data.products.length>0){
+                const thumbnail=res.data.products[0].thumbnail
+                setThumbnails(prevThumbnails => [...prevThumbnails, thumbnail]);
+                return thumbnail;
+            }
+        } catch (error) {
+            console.error('Error fetching thumbnail:', error.message);
+        }
+        
+    };
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -46,20 +64,13 @@ export default function Home() {
                 const result = await response.data
 
                 if (result && Array.isArray(result)) {
+                    result.forEach(async (product) => {
+                        product.thumbnail=await fetchThumbnail(product.name)
+                       });
                     setProducts(result);
                     setFilteredProducts(result);
                     const uniqueCategories = Array.from(new Set(result.map(product => product.store.name)));
                     setCategories(uniqueCategories);
-
-                    // filteredProducts.forEach(async (product) => {
-                     
-                    //  const res = await axios.get(`https://dummyjson.com/products/search?q=bag`)
-                    //  const thumbnail=res.products[0].thumbnail
-                    //  product.thumbnail=thumbnail
-                    // });
-                    // filteredProducts.forEach(async (product) => {
-
-                    // });
                 } else {
                     console.error('Invalid data structure:', result);
                     setProducts([]);
@@ -70,22 +81,21 @@ export default function Home() {
                 console.error('Error fetching data:', error);
             }
         };
-
+        
         fetchData();
+
     }, []); 
-
-   
-
+    
     return (
         <div className='Main'>
             <Header onSearch={handleSearch} />
 
             {total > 0 && (
-                <Basket resetBasket={resetBasket} total={total} products={filteredProducts} basket={basket} />
+                <Basket resetBasket={resetBasket} total={total} products={products} basket={basket} />
             )}
             
-           {/* <Slider slides={products.thumbnail} /> */}
            <Loginİmage/>
+           <Slider slides={thumbnails} />
             <div className="categories-container">
                 {categories.map(category => (
                     <div key={category} className="category-container">

@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -81,27 +81,14 @@ const HeartIcon = styled(IoIosHeart)`
 //   border-radius: 10px; 26
 // `;
 
-
   
 function  Product ({ product, total, money, basket, setBasket, value }) {
-  const [thumbnail, setThumbnail] = useState(null);
-  const fetchThumbnail = async () => {
-    try {
-        const res = await axios.get(`https://dummyjson.com/products/search?q=${product.name}`);
-        const thumbnailData = res.data.products[0].thumbnail;
-        setThumbnail(thumbnailData);
-    } catch (error) {
-        console.error('Error fetching thumbnail:', error.message);
-    }
-};
-fetchThumbnail()
   const [ProductItem, setProductItem] = useState(checkIfProduct(product.id));
-
   function checkIfProduct(productİtemId){
     const ProductsItems = JSON.parse(localStorage.getItem('Products')) || [];
     return ProductsItems.includes(productİtemId)
   }
-  
+
   const toggleProduct = () => {
     const productId = product.id;
     let ProductItems = JSON.parse(localStorage.getItem('Products')) || [];
@@ -225,7 +212,7 @@ fetchThumbnail()
           </IconButton>
 
           <img
-            src={thumbnail}
+            src={product.thumbnail}
             alt=""
             style={{ width: "100px", height: "100px", marginBottom: "10px", borderRadius: "10px"}}
           />
