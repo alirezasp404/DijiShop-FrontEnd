@@ -102,11 +102,6 @@ function Signup() {
           if (error.response.data.password) {
             if (
               error.response.data.password[0] ===
-              "The password is too similar to the first name."
-            ) {
-              setPasserror("رمز عبور بسیار شبیه به نام می باشد");
-            } else if (
-              error.response.data.password[0] ===
               "The password is too similar to the username."
             ) {
               setPasserror("رمز عبور بسیار شبیه به نام یا نام خانوادگی می باشد");
