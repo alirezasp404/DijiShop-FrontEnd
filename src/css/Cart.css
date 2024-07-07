@@ -1,0 +1,59 @@
+
+
+.spec {
+  font-size: 11px;
+}
+#AddQuantity-RemoveQuantity{
+  margin-right: 20px;
+}
+#AddQuantity-RemoveQuantity:hover{
+  cursor: pointer;
+}
+#Leftİcon{
+  left: 0;
+}
+#Rightİcon{
+  right: 0;
+}
+  
+
+.quantity-controller {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+
+#Trash {
+  margin-top: auto;
+  margin-bottom: 3px;
+}
+/* Removes product description */
+.spec {
+  display: none;
+}
+@media (max-width: 850px) {
+
+  .items img {
+      width: 50px;
+      height: 50px;
+      border-radius: 5px;
+      margin-right: 10px;
+  }
+
+  /* Removes product description */
+  .spec {
+      display: none;
+  }
+
+}
+
+@media (max-width: 500px) {
+  #Trash {
+    margin-top: auto;
+    margin-bottom: 0px;
+    position: relative;
+    right: 30px;
+  }
+}

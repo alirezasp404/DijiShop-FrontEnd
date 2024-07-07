@@ -1,0 +1,16 @@
+.İconLinks{
+    text-decoration: none;
+    color: white;
+}
+.MobilMenuİconLinks{
+    text-decoration: none;
+    color: black;
+}
+.FavİconLinks{
+    text-decoration: nnoe;
+}
+
+.FavİconLinks:hover{
+    color: none;
+    text-decoration: none;
+}
