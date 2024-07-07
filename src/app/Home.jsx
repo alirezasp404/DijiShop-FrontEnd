@@ -7,7 +7,6 @@ import Loginİmage from '../components/Loginİmage'
 import Slider from '../components/Slider';
 import {api} from "../vars/JwtToken"
 
-console.log(axios.isCancel('something'));
 export default function Home() {
     const [money] = useState(100000);
     const [basket, setBasket] = useState([]);
@@ -61,7 +60,6 @@ export default function Home() {
                     // filteredProducts.forEach(async (product) => {
 
                     // });
-                    console.log(filteredProducts)
                 } else {
                     console.error('Invalid data structure:', result);
                     setProducts([]);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -83,15 +83,18 @@ const HeartIcon = styled(IoIosHeart)`
 
 
   
-function Product({ product, total, money, basket, setBasket, value }) {
-
-  try {
-    const res = axios.get(`https://dummyjson.com/products/search?q=${product.name}`);
-    const thumbnail = res.data.products[0].thumbnail; // Adjust the path based on the actual response structure
-    product.thumbnail = thumbnail;
-} catch (error) {
-    console.error('Error fetching thumbnail:', error.message);
-}
+function  Product ({ product, total, money, basket, setBasket, value }) {
+  const [thumbnail, setThumbnail] = useState(null);
+  const fetchThumbnail = async () => {
+    try {
+        const res = await axios.get(`https://dummyjson.com/products/search?q=${product.name}`);
+        const thumbnailData = res.data.products[0].thumbnail;
+        setThumbnail(thumbnailData);
+    } catch (error) {
+        console.error('Error fetching thumbnail:', error.message);
+    }
+};
+fetchThumbnail()
   const [ProductItem, setProductItem] = useState(checkIfProduct(product.id));
 
   function checkIfProduct(productİtemId){
@@ -178,7 +181,6 @@ function Product({ product, total, money, basket, setBasket, value }) {
         },
       });
     } else {
-      // Favoriden kaldır
       const updatedFavorites = favorites.filter((favId) => favId !== productId);
       localStorage.setItem('Favorites', JSON.stringify(updatedFavorites));
 
@@ -189,7 +191,6 @@ function Product({ product, total, money, basket, setBasket, value }) {
       });
     }
 
-    // Favori durumunu güncelle
     setIsFavorite(!isFavorite);
   };
 
@@ -224,7 +225,7 @@ function Product({ product, total, money, basket, setBasket, value }) {
           </IconButton>
 
           <img
-            src={product.thumbnail}
+            src={thumbnail}
             alt=""
             style={{ width: "100px", height: "100px", marginBottom: "10px", borderRadius: "10px"}}
           />
