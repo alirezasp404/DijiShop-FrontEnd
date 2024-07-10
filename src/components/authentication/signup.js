@@ -5,12 +5,14 @@ import { api } from "../../vars/JwtToken.js";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "bootstrap/dist/css/bootstrap.min.css";
+
 function Signup() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [passerror, setPasserror] = useState("");
   const [confirmPasserror, setConfirmPasserror] = useState("");
+  const [userType, setUserType] = useState("customer"); // default is customer
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,20 +22,23 @@ function Signup() {
   }, []);
 
   const handleFirstnameChange = (event) => {
-    setFirstname("");
+    setFirstname(event.target.value);
   };
   const handleLastnameChange = (event) => {
-    setLastname("");
+    setLastname(event.target.value);
   };
   const handleEmailChange = (event) => {
-    setEmail("");
+    setEmail(event.target.value);
   };
   const handlePasswordChange = (event) => {
     setPasserror("");
   };
   const handleConfirmPasswordChange = (event) => {
     setConfirmPasserror("");
-  }
+  };
+  const handleUserTypeChange = (event) => {
+    setUserType(event.target.id);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,13 +51,9 @@ function Signup() {
     const registerUser = async (firstname, lastname, email, password, confirmpassword) => {
       var data = {
         email: email,
-        // first_name: firstname,
-        // last_name: lastname,
         username: firstname + lastname,
         password: password,
       };
-
-      console.log(data);
 
       if (password !== confirmpassword) {
         setConfirmPasserror("تکرار رمز عبور با رمز عبور یکسان نیست");
@@ -60,76 +61,90 @@ function Signup() {
       }
       try {
         const response = await api.post("/auth/users/", data);
-        console.log(response);
         if (response.status === 201) {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", Swal.stopTimer);
-              toast.addEventListener("mouseleave", Swal.resumeTimer);
-            },
-          });
+          const jwt_data = {
+            username: firstname + lastname,
+            password: password,
+          };
+          try {
+            const response = await api.post("/auth/jwt/create/", jwt_data, {
+              headers: { "Content-Type": "application/json" },
+            });
+            const token = response.data.access;
+            localStorage.setItem("jwtAccessToken", token);
+            if (response.status === 200) {
 
-          Toast.fire({
-            icon: "success",
-            title: "ثبت نام با موفقیت انجام شد",
-          });
-          navigate("/login");
+              if (userType === "seller") {
+                const sellerData = { phone: "09111111111" };
+                try {
+                  const sellerResponse = await api.post("/seller_signup/", sellerData, {
+                    headers: { "Authorization": `JWT ${localStorage.getItem("jwtAccessToken")}` },
+                  });
+                  if (sellerResponse.status !== 201) {
+                    throw new Error("Failed to register seller");
+                  }
+                } catch (error) {
+                  console.log(error);
+                  Swal.fire({
+                    icon: "error",
+                    title: "خطا",
+                    text: "خطا در ثبت نام فروشنده",
+                  });
+                  return;
+                }
+              }
+
+
+
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener("mouseenter", Swal.stopTimer);
+                  toast.addEventListener("mouseleave", Swal.resumeTimer);
+                },
+              });
+
+              Toast.fire({
+                icon: "success",
+                title: "ثبت نام با موفقیت انجام شد",
+              });
+              navigate("/");
+            }
+          } catch (error) {
+            console.log(error);
+          }
         }
       } catch (error) {
         console.log(error);
-        if (error) {
+        if (error.response) {
           if (error.response.data.email) {
-            if (
-              error.response.data.email[0] ===
-              "user with this email already exists."
-            ) {
+            if (error.response.data.email[0] === "user with this email already exists.") {
               setEmail("کاربر با این ایمیل قبلا ثبت نام کرده است");
-            } else if (
-              error.response.data.email[0] === "Enter a valid email address."
-            ) {
+            } else if (error.response.data.email[0] === "Enter a valid email address.") {
               setEmail("یک ایمیل معتبر وارد نمایید");
-            } else if (
-              error.response.data.email[0] === "This field may not be blank."
-            ) {
+            } else if (error.response.data.email[0] === "This field may not be blank.") {
               setEmail("فیلد ایمیل الزامی است");
             }
           }
           if (error.response.data.password) {
-            if (
-              error.response.data.password[0] ===
-              "The password is too similar to the username."
-            ) {
+            if (error.response.data.password[0] === "The password is too similar to the username.") {
               setPasserror("رمز عبور بسیار شبیه به نام یا نام خانوادگی می باشد");
-            } else if (
-              error.response.data.password[0] ===
-              "The password is too similar to the email."
-            ) {
+            } else if (error.response.data.password[0] === "The password is too similar to the email.") {
               setPasserror("رمز عبور بسیار شبیه به ایمیل می باشد");
-            } else if (
-              error.response.data.password[0] ===
-              "This password is too short. It must contain at least 8 characters."
-            ) {
+            } else if (error.response.data.password[0] === "This password is too short. It must contain at least 8 characters.") {
               setPasserror("رمز عبور باید بیشتر از 8 کاراکتر باشد");
-            } else if (
-              error.response.data.password[0] ===
-              "This password is entirely numeric."
-            ) {
-              setPasserror(
-                "رمز عبور باید حداقل یک کاراکتر غیر عددی داشته باشد"
-              );
-            } else if (
-              error.response.data.password[0] === "This field may not be blank."
-            ) {
+            } else if (error.response.data.password[0] === "This password is entirely numeric.") {
+              setPasserror("رمز عبور باید حداقل یک کاراکتر غیر عددی داشته باشد");
+            } else if (error.response.data.password[0] === "This field may not be blank.") {
               setPasserror("فیلد رمز عبور الزامی است");
+            } else if (error.response.data.password[0] === "This password is too common.") {
+              setPasserror("رمز عبور بسیار ساده است");
             }
           }
-
-          return;
         }
       }
     };
@@ -157,7 +172,7 @@ function Signup() {
             <div className="signup-div">
               <div className="d-flex">
                 <div>
-                  <div className="signup-error">{firstname}</div>
+                  {/* <div className="signup-error">{firstname}</div> */}
                   <div className="signup-lastname-div">
                     <input
                       name="lastname"
@@ -182,7 +197,7 @@ function Signup() {
                   <hr className="border-bottom-input-signup"></hr>
                 </div>
               </div>
-              <div className="signup-error">{lastname}</div>
+              {/* <div className="signup-error">{lastname}</div> */}
               <div className="signup-email-div">
                 <input
                   name="email"
@@ -193,7 +208,7 @@ function Signup() {
                 />
               </div>
               <hr className="border-bottom-input-signup"></hr>
-              <div className="signup-error">{email}</div>
+              {/* <div className="signup-error">{email}</div> */}
               <div className="signup-password-div" style={{ display: "flex" }}>
                 <input
                   name="password"
@@ -215,6 +230,20 @@ function Signup() {
                 />
               </div>
               <hr className="border-bottom-input-signup"></hr>
+              <div className="d-flex mb-3">
+                <div className="form-check fs-6 w-50 mx-2">
+                  <input className="form-check-input" type="radio" name="user_type" id="seller" onChange={handleUserTypeChange} />
+                  <label className="form-check-label" htmlFor="seller">
+                    فروشنده
+                  </label>
+                </div>
+                <div className="form-check fs-6 w-50 mx-2">
+                  <input className="form-check-input" type="radio" name="user_type" id="customer" checked={userType === "customer"} onChange={handleUserTypeChange} />
+                  <label className="form-check-label" htmlFor="customer">
+                    مشتری
+                  </label>
+                </div>
+              </div>
               <div className="signup-error">{confirmPasserror}</div>
               <div className="signup-button">
                 <button className="btn btn-primary fw-bold mt-1">تایید</button>
@@ -222,13 +251,11 @@ function Signup() {
             </div>
           </div>
         </form>
-
         <div className="d-flex justify-content-evenly">
           <hr className="left-line-signup-by"></hr>
           <span className="text-white mt-1">ثبت نام با</span>
           <hr className="right-line-signup-by"></hr>
         </div>
-
         <div className="mx-4 google-linkedin-button mt-4">
           <a className="signin-linkedin-a" href={process.env.PUBLIC_URL}>
             <span className="">لینکدین</span>
@@ -252,12 +279,8 @@ function Signup() {
             />
           </a>
         </div>
-
         <div className="signup-div text-center">
-          <Link
-            to="/login"
-            className="btn btn-prim fw-bold py-2 register-button"
-          >
+          <Link to="/login" className="btn btn-prim fw-bold py-2 register-button">
             قبلا ثبت نام کرده ام
           </Link>
         </div>
