@@ -16,11 +16,12 @@ import { IoSearchSharp } from "react-icons/io5";
 import { IoMdHome } from "react-icons/io";
 import { createTheme, ThemeProvider} from '@mui/material/styles';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import Styled from 'styled-components';
 import { IoIosHeart} from "react-icons/io";
 import FavoritesCount from '../hooks/FavoritesCount'
 import '../css/Routes.css'
+import { useNavigate } from "react-router-dom";
 
 const darkTheme = createTheme({
   palette: {
@@ -84,6 +85,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar({ product, total, money, basket, setBasket, onSearch }) {
+  const navigate = useNavigate();
+
+
+  const handleLogout=()=>{
+    localStorage.removeItem("jwtAccessToken")
+    navigate("/login")
+  }
   const favoritesCount = FavoritesCount();
 
 
@@ -248,9 +256,19 @@ export default function PrimarySearchAppBar({ product, total, money, basket, set
                 onClick={handleProfileMenuOpen}
                 color="inherit"
               >
+
+                {localStorage.getItem("jwtAccessToken")==null ?
+                
+                
+                
+                                   <Link to="/login" >Login</Link> :
+                                   <>
                 <Badge className="amount" badgeContent={totalQuantity} color="error">
                   <Link to="/cart" className="İconLinks"><FaShoppingCart className="İconLinks"/></Link>
                 </Badge>
+                                   <button  onClick={handleLogout}>Logout</button>
+                                   </>
+                }
               </IconButton>
             </Box>
             

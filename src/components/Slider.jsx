@@ -8,7 +8,7 @@ const ImageSlider = ({ slides }) => {
   const [products, setProducts] = useState([slides]);
   useEffect(() => {
     const fetchData = async () => {
-      setProducts(slides)
+      setProducts(slides.slice(0,6))
     };
 
     fetchData();
@@ -35,9 +35,9 @@ const ImageSlider = ({ slides }) => {
     );
   };
   return (
-<>
-{
-  ( 
+
+
+  
     <section className='slider'>
         
       <BsChevronCompactLeft className='left-arrow' onClick={prevSlide} />
@@ -65,8 +65,6 @@ const ImageSlider = ({ slides }) => {
       
       </div>
     </section>
-  )}
-        </>
   );
 };
 

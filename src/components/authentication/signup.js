@@ -92,6 +92,24 @@ function Signup() {
                   });
                   return;
                 }
+              }else{
+                const customerData = { phone: "09111111111" };
+                try {
+                  const customerResponse = await api.post("/customer_signup/", customerData, {
+                    headers: { "Authorization": `JWT ${localStorage.getItem("jwtAccessToken")}` },
+                  });
+                  if (customerResponse.status !== 201) {
+                    throw new Error("Failed to register customer");
+                  }
+                } catch (error) {
+                  console.log(error);
+                  Swal.fire({
+                    icon: "error",
+                    title: "خطا",
+                    text: "خطا در ثبت نام خریدار",
+                  });
+                  return;
+                }
               }
 
 

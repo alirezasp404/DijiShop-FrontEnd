@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 import { BsChevronCompactRight,  BsChevronCompactLeft } from "react-icons/bs";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import classNames from 'classnames';
-import Header from '../components/Search'
 import '../css/Cart.css';
 import '../css/newCart.css'
 import {api} from "../vars/JwtToken"
 import axios from "axios"
+import Swal from "sweetalert2";
 export default function Cart() {
   // const[total, SetTotal] = useState('')
   // useEffect(() => {
@@ -183,9 +183,8 @@ export default function Cart() {
     const finalObject = { stuffs: formattedStuffs };
 
 
-    localStorage.setItem("jwtAccessToken", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIwNDY2NDUwLCJpYXQiOjE3MjAzODAwNTAsImp0aSI6IjVmMWRkNDdmYzExYTRmNjk4NTBiZTIyMmY1NzlkM2ExIiwidXNlcl9pZCI6NX0.BpapTMiRlJyZFn7QXd3Rugq7nKoFhvEd3Gfwx7rUlBE");
     const token = localStorage.getItem('jwtAccessToken');
-  
+
     api.post('/add_stuff_to_cart/', finalObject, {
       headers: { "Content-Type": "application/json",
           Authorization: 'JWT ' + token,
@@ -197,14 +196,23 @@ export default function Cart() {
           Authorization: 'JWT ' + token,
        },
     }).then(response=>{
-      console.log("success full buy",response.data)
+      Swal.fire({
+        icon: "success",
+        title: " خرید با موفقیت انجام شد",
+      });
     })
     .catch(error=>{
-      console.error(error)
+      Swal.fire({
+        icon: "error",
+        title: "خطا در انجام عملیات",
+      });
     })
   })
   .catch(error => {
-    console.error('Error:', error.message);
+    Swal.fire({
+      icon: "error",
+      title: "خطا در انجام عملیات",
+    });
   });
   }
 
